@@ -1,0 +1,88 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "@dnd-mapp/changelog-tools",
+  "description": "Verifies Keep a Changelog files before a release and extracts the release notes for a version.",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "author": "D&D Mapp",
+  "keywords": [
+    "changelog",
+    "keep-a-changelog",
+    "release",
+    "release-notes",
+    "semver",
+    "cli",
+    "typescript",
+    "nodejs",
+    "dnd-mapp"
+  ],
+  "homepage": "https://github.com/dnd-mapp/changelog-tools#readme",
+  "bugs": {
+    "url": "https://github.com/dnd-mapp/changelog-tools/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnd-mapp/changelog-tools.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "directory": "dist"
+  },
+  "bin": {
+    "changelog": "./changelog.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./types.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "prepublishOnly": "pnpm build && prepare-dist",
+    "build": "tsdown",
+    "test": "vitest --ui",
+    "test-ci": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint-ts": "eslint",
+    "lint-md": "markdownlint-cli2",
+    "format": "prettier -w .",
+    "format-check": "prettier -c ."
+  },
+  "engines": {
+    "node": "^24.21.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.21.0",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.5.1",
+      "onFail": "error"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "catalog:commitlint",
+    "@dnd-mapp/config-commitlint": "catalog:commitlint",
+    "@dnd-mapp/config-eslint": "catalog:eslint",
+    "@dnd-mapp/config-markdown": "catalog:markdown",
+    "@dnd-mapp/config-prettier": "catalog:prettier",
+    "@dnd-mapp/config-typescript": "catalog:",
+    "@dnd-mapp/package-builder": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:vitest",
+    "@vitest/ui": "catalog:vitest",
+    "eslint": "catalog:eslint",
+    "lefthook": "catalog:commitlint",
+    "markdownlint-cli2": "catalog:markdown",
+    "prettier": "catalog:prettier",
+    "prettier-plugin-organize-imports": "catalog:prettier",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:vitest",
+    "vitest": "catalog:vitest"
+  }
+}
