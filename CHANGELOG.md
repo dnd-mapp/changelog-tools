@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-23
+
 ### Added
 
 - `changelog verify` command that fails unless the changelog has a complete, releasable section for a version. It checks the version against `package.json`, the section and its date and entries, and the link references.
@@ -14,4 +16,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Public API from the package root. It exports `parseChangelog`, `findRelease`, `verifyRelease`, and `renderNotes`.
 - Bundled type declarations in `types.d.ts`, including the `Changelog`, `Release`, `Verification`, `VerifyOptions`, and `NotesOptions` types.
 
-[Unreleased]: https://github.com/dnd-mapp/changelog-tools/commits/main
+[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.0.0
