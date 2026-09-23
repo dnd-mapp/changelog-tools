@@ -1,0 +1,147 @@
+# Contributing
+
+Thank you for your interest in contributing to `@dnd-mapp/changelog-tools`.
+
+This package decides whether a release may go ahead and writes the notes of every GitHub Release. A mistake here can block a release or publish wrong notes, so please keep changes small and deliberate.
+
+## Before you start
+
+Open an [issue](https://github.com/dnd-mapp/changelog-tools/issues) to discuss any change beyond a typo fix before you send a pull request. This avoids work on changes that do not fit the goals of the package.
+
+## Development setup
+
+The required tool versions are enforced through `devEngines` and `engineStrict`, so installing with other versions fails.
+
+- Node `24.21.0`
+- pnpm `12.5.1`
+
+Install the dependencies with:
+
+```bash
+pnpm install
+```
+
+Dependency versions live in the catalogs in `pnpm-workspace.yaml`, which uses `catalogMode: strict`. Add or bump versions there and reference them in `package.json`. Use `catalog:` for the default catalog and a named catalog such as `catalog:vitest` for a group of tools.
+
+Newly published releases are held back for three days through `minimumReleaseAge`. You may need to wait before you can bump to a very recent version.
+
+## Git hooks
+
+[Lefthook](https://lefthook.dev/) installs the Git hooks when you run `pnpm install`. The hooks are defined in `lefthook.yaml`.
+
+| Hook         | Runs                                           | On                        |
+|:-------------|:-----------------------------------------------|:--------------------------|
+| `pre-commit` | Prettier, markdownlint-cli2, and ESLint checks | The staged files          |
+| `commit-msg` | commitlint                                     | The message of the commit |
+
+The pre-commit hooks only check files. Run `pnpm run format` to fix formatting issues, and `pnpm exec eslint --fix` to apply the fixes that ESLint can make. Stage the result.
+
+## Project layout
+
+The sources live in `src`, and most modules have a `.spec.ts` file next to them.
+
+| File                  | Purpose                                                              |
+|:----------------------|:---------------------------------------------------------------------|
+| `src/changelog.ts`    | The executable behind the `changelog` bin. It runs on import         |
+| `src/cli.ts`          | Parses the arguments, reads and writes the files, and prints results |
+| `src/index.ts`        | The public entry. It re-exports what consumers can build on          |
+| `src/parse.ts`        | Reads the sections and link references of a changelog                |
+| `src/verify.ts`       | Runs the release checks on a parsed changelog                        |
+| `src/notes.ts`        | Renders the section of a version as release notes                    |
+| `testing/fixtures.ts` | The changelogs that the specs run against                            |
+
+Import other files with the `.ts` extension. The bundler resolves it, and `tsc` accepts it because `allowImportingTsExtensions` is on.
+
+## Changing the code
+
+Only `src/cli.ts` touches the file system and the console. The parser, the checks, and the renderer take strings and return values, so keep them free of I/O. That keeps them usable from the public API and easy to test.
+
+The commands resolve paths from the directory that they run from. Keep it that way, because the installed bin must work on the project of the consumer.
+
+Export a function or type from `src/index.ts` only when you want consumers to depend on it. Anything exported there is part of the public API and follows Semantic Versioning.
+
+When you add or change a check, update these files in the same pull request.
+
+- The check in `src/verify.ts` and its tests.
+- A fixture in `testing/fixtures.ts`, when no existing one covers the situation.
+- The table of checks in the README.
+
+## Building and testing
+
+The `build` script bundles the package with [tsdown](https://tsdown.dev) into `dist`. It writes `index.js`, `types.d.ts`, `changelog.js`, and a chunk that the two entries share. The `prepublishOnly` script runs the build and then `prepare-dist` from `@dnd-mapp/package-builder`.
+
+Tests use Vitest. They replace `node:fs/promises` and the console with the mocks in `testing`, so no test touches the real file system. The fixtures are TypeScript strings rather than Markdown files, so the CRLF fixture keeps its line endings and markdownlint leaves them alone. Coverage must stay above the thresholds in `vitest.config.ts`.
+
+Check and format the repository with these commands. CI runs `format-check`, `lint-md`, `lint-ts`, `typecheck`, `test-ci`, and `build`. Run them yourself before you open a pull request.
+
+```bash
+pnpm run format-check
+pnpm run format
+pnpm run lint-md
+pnpm run lint-ts
+pnpm run typecheck
+pnpm run test-ci
+pnpm run build
+```
+
+The `lint-md` script lints the Markdown files with markdownlint, and the `lint-ts` script lints the code with ESLint. Use `pnpm test` to run the tests in watch mode with the Vitest UI.
+
+## Changelog and versioning
+
+This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Record every notable change for consumers under `[Unreleased]` in `CHANGELOG.md`, using the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
+
+Release workflows depend on the exit codes and the output of the commands. A new check that can fail an existing changelog, a changed option, and a different notes format are breaking changes for consumers. Say so in the changelog entry.
+
+## Code style
+
+Follow the rules in `.editorconfig`.
+
+- Use UTF-8 and LF line endings.
+- Indent with 4 spaces, or 2 spaces in `package.json` and `pnpm-*.yaml`.
+- End every file with a newline and trim trailing whitespace.
+
+Follow these rules for prose, including Markdown files.
+
+- Never hard wrap prose. Write each paragraph or list item on a single line.
+- Use US spelling, for example "color" and "behavior".
+- Keep every sentence at or under 40 words.
+- Pretty print Markdown tables so the columns line up, with alignment markers on every separator line.
+
+## Branches
+
+Create a branch from `main` for each change. Name it `<type>/<short-description>` in lowercase with hyphens between words, for example `feat/check-release-date` or `fix/crlf-headings`.
+
+Use the same types as for commits.
+
+## Commits
+
+Write commit messages that follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+```text
+<type>(<optional scope>): <description>
+```
+
+Use one of these types.
+
+| Type       | Use for                                            |
+|:-----------|:---------------------------------------------------|
+| `feat`     | A new command, option, check, or export            |
+| `fix`      | A correction to existing behavior                  |
+| `docs`     | Changes to documentation only                      |
+| `refactor` | Changes that do not alter the behavior of the tool |
+| `test`     | Changes to tests only                              |
+| `build`    | Changes to packaging, dependencies, or tooling     |
+| `chore`    | Other maintenance that does not fit above          |
+
+Write the description in the imperative mood, such as "check the release date". Mark a breaking change with `!` after the type or scope, and add a `BREAKING CHANGE:` footer that explains what consumers must do.
+
+## Pull requests
+
+- Keep each pull request to one change.
+- Link the issue it addresses.
+- Update the changelog and README in the same pull request.
+- Use a title that follows the commit convention.
+
+## License
+
+By contributing, you agree that your contributions are licensed under the [MIT license](LICENSE).
