@@ -1,5 +1,8 @@
 .idea/*
+!.idea/inspectionProfiles/
+!.idea/jsLinters/
 !.idea/runConfigurations/
+!.idea/markdown.xml
 !.idea/prettier.xml
 
 .vscode/*
