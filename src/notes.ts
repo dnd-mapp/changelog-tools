@@ -31,13 +31,16 @@ function repositoryUrl(changelog: Changelog, version: string): string | undefine
  * @param version The version to render.
  * @param options Whether to append a compare link.
  * @returns The notes, without a trailing newline.
- * @throws {Error} When the changelog has no section for the version, or no link to build the compare link from.
+ * @throws {Error} When the version is `Unreleased`, the changelog has no section for it, or no link can build the compare link.
  */
 export function renderNotes(changelog: Changelog, version: string, options: NotesOptions = {}): string {
     const { compareLink = false, file = 'CHANGELOG.md' } = options;
     const release = findRelease(changelog, version);
 
-    if (release === undefined || isUnreleased(version)) {
+    if (isUnreleased(version)) {
+        throw new Error('Cannot render notes for the Unreleased section. Pass a released version.');
+    }
+    if (release === undefined) {
         throw new Error(`${file} has no section for ${version}`);
     }
     const index = changelog.releases.indexOf(release);

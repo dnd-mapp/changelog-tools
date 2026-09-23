@@ -131,6 +131,17 @@ describe('run', () => {
             ]);
         });
 
+        it('should fail for the unreleased section', async () => {
+            await expect(run(['notes', '--version', 'Unreleased'])).resolves.toBe(1);
+
+            expect(consoleMock.entries).toEqual([
+                {
+                    severity: 'error',
+                    message: 'Cannot render notes for the Unreleased section. Pass a released version.',
+                },
+            ]);
+        });
+
         it('should fail when the output file cannot be written', async () => {
             fsMock.fail('writeFile', new Error('EACCES: permission denied'));
 
