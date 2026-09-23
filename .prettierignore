@@ -10,6 +10,11 @@
 
 .idea/
 
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
 node_modules/
 pnpm-lock.yaml
 
