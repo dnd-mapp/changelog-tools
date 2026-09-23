@@ -66,6 +66,8 @@ The command prints the section of the version without its heading. It keeps the 
 
 The previous release is the next section below the version. The repository URL comes from the link reference of the version, or else from the `[Unreleased]` link. The first release in a changelog gets no compare link.
 
+The command only renders released versions. It fails with `Cannot render notes for the Unreleased section. Pass a released version.` when the version is `Unreleased`, and with `CHANGELOG.md has no section for 1.2.0` when the section is missing.
+
 ### In a release workflow
 
 Run both commands before anything is published, and use the notes file as the body of the GitHub Release.

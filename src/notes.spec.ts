@@ -54,8 +54,8 @@ describe('renderNotes', () => {
     });
 
     it('should not render the unreleased section', () => {
-        expect(() => renderNotes(parseChangelog(valid), 'Unreleased')).toThrow(
-            'CHANGELOG.md has no section for Unreleased',
+        expect(() => renderNotes(parseChangelog(valid), 'unreleased')).toThrow(
+            'Cannot render notes for the Unreleased section. Pass a released version.',
         );
     });
 });
