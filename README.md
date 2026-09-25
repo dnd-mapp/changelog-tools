@@ -10,7 +10,7 @@ Run `changelog verify` before you publish, so a release never goes out with a mi
 
 ## Requirements
 
-- Node.js 24.21 or a later 24.x release, matching the `engines` field.
+- A Node.js version that matches the `engines` field of the package.
 - A changelog in the Keep a Changelog 1.1.0 format, with a link reference for every release.
 
 ## Installation
