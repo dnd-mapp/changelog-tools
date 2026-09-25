@@ -8,7 +8,7 @@ This package ships the `changelog` bin with the `verify` and `notes` commands, p
 - Treat the failure messages as a contract. When you change one, update the README table and the specs in the same commit.
 - Add a fixture to `testing/fixtures.ts` for every new situation that a check handles. Short inline snippets are fine for parser edge cases.
 - Keep the package free of runtime dependencies. Use `node:util` and other Node built-ins instead.
-- Run `format-check`, `lint-md`, `lint-ts`, `typecheck`, `test-ci`, and `build` before you commit.
+- Run `format-check`, `lint-md`, `lint-ts`, `typecheck`, `test-ci`, `build`, and `actionlint` before you commit.
 
 ## Writing style
 
