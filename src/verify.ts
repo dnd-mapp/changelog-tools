@@ -46,7 +46,7 @@ function isInTheFuture(date: string, now: Date): boolean {
 }
 
 /** Whether a body has a Keep a Changelog group, such as `### Added`, with at least one list item under it. */
-function hasEntries(body: string): boolean {
+export function hasEntries(body: string): boolean {
     let inGroup = false;
 
     for (const line of body.split('\n')) {

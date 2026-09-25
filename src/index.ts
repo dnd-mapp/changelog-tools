@@ -6,4 +6,5 @@
  */
 export { renderNotes, type NotesOptions } from './notes.ts';
 export { findRelease, parseChangelog, type Changelog, type Release } from './parse.ts';
+export { prepareRelease, setManifestVersion, type Bump, type PreparedRelease, type ReleaseOptions } from './release.ts';
 export { verifyRelease, type Verification, type VerifyOptions } from './verify.ts';

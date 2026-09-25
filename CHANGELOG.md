@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `changelog release --bump <major|minor|patch>` command that prepares the release commit. It bumps the latest release to the next version, moves the `[Unreleased]` entries into a section for it dated today in UTC, updates the link references, and sets `version` in `package.json`. It keeps the line endings of both files and fails without writing when the changelog cannot be released.
+- `prepareRelease` and `setManifestVersion` in the public API, with the `Bump`, `ReleaseOptions`, and `PreparedRelease` types.
+
 ## [1.0.0] - 2026-09-23
 
 ### Added

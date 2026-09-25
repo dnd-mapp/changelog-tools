@@ -1,6 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { consoleMock } from '../testing/console.ts';
-import { manifest, missingSection, notes, staleLinks, valid } from '../testing/fixtures.ts';
+import {
+    manifest,
+    missingSection,
+    notes,
+    staleLinks,
+    unreleased,
+    unreleasedManifest,
+    valid,
+} from '../testing/fixtures.ts';
 import { fsMock } from '../testing/fs-promises.ts';
 import { run, USAGE } from './cli.ts';
 
@@ -153,13 +161,77 @@ describe('run', () => {
         });
     });
 
+    describe('release', () => {
+        const releasedManifest = unreleasedManifest.replace('"version": "1.1.0"', '"version": "1.2.0"');
+
+        beforeEach(() => {
+            vi.setSystemTime(new Date('2026-09-22T12:00:00Z'));
+            fsMock.files({ 'CHANGELOG.md': unreleased, 'package.json': unreleasedManifest });
+        });
+
+        it('should write the release to the changelog and the manifest', async () => {
+            await expect(run(['release', '--bump', 'minor'])).resolves.toBe(0);
+
+            expect(fsMock.entriesOf('writeFile')).toEqual([
+                { operation: 'writeFile', path: 'CHANGELOG.md', data: valid },
+                { operation: 'writeFile', path: 'package.json', data: releasedManifest },
+            ]);
+            expect(consoleMock.entries).toEqual([
+                { severity: 'log', message: 'Prepared the 1.2.0 release in CHANGELOG.md and package.json' },
+            ]);
+        });
+
+        it('should read and write the changelog and the manifest at the given paths', async () => {
+            fsMock.files({ 'docs/CHANGES.md': unreleased, 'app/package.json': unreleasedManifest });
+
+            await expect(
+                run(['release', '--bump', 'minor', '--file', 'docs/CHANGES.md', '--manifest', 'app/package.json']),
+            ).resolves.toBe(0);
+
+            expect(fsMock.entriesOf('writeFile').map(({ path }) => path)).toEqual([
+                'docs/CHANGES.md',
+                'app/package.json',
+            ]);
+            expect(consoleMock.entries).toEqual([
+                { severity: 'log', message: 'Prepared the 1.2.0 release in docs/CHANGES.md and app/package.json' },
+            ]);
+        });
+
+        it('should write nothing when the release cannot be prepared', async () => {
+            fsMock.files({ 'CHANGELOG.md': unreleased, 'package.json': manifest });
+
+            await expect(run(['release', '--bump', 'minor'])).resolves.toBe(1);
+
+            expect(fsMock.entriesOf('writeFile')).toEqual([]);
+            expect(consoleMock.entries).toEqual([
+                {
+                    severity: 'error',
+                    message: 'package.json version 1.2.0 does not match the latest release 1.1.0 in CHANGELOG.md',
+                },
+            ]);
+        });
+
+        it('should fail when a file cannot be written', async () => {
+            fsMock.fail('writeFile', new Error('EACCES: permission denied'));
+
+            await expect(run(['release', '--bump', 'minor'])).resolves.toBe(1);
+
+            expect(consoleMock.entries).toEqual([
+                { severity: 'error', message: 'Failed to write "CHANGELOG.md": EACCES: permission denied' },
+            ]);
+        });
+    });
+
     it.each([
         [['verify'], 'Missing the --version option'],
         [['notes', '--file', 'CHANGELOG.md'], 'Missing the --version option'],
         [['verify', '--version', '1.2.0', '--output', 'notes.md'], "Unknown option '--output'"],
         [['notes', '--version'], "Option '--version <value>' argument missing"],
         [['notes', '--version', '1.2.0', 'extra'], "Unexpected argument 'extra'"],
-        [['release'], 'Unknown command "release"'],
+        [['release'], 'Missing the --bump option'],
+        [['release', '--bump', 'huge'], 'The --bump option must be major, minor, or patch'],
+        [['release', '--bump', 'minor', '--version', '1.2.0'], "Unknown option '--version'"],
+        [['publish'], 'Unknown command "publish"'],
         [[], 'Missing a command'],
     ])('should print the usage for %j', async (args, message) => {
         await expect(run(args)).resolves.toBe(1);
