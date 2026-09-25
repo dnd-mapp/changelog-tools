@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-25
+
 ### Added
 
 - `changelog release --bump <major|minor|patch>` command that prepares the release commit. It bumps the latest release to the next version, moves the `[Unreleased]` entries into a section for it dated today in UTC, updates the link references, and sets `version` in `package.json`. It keeps the line endings of both files and fails without writing when the changelog cannot be released.
@@ -21,5 +23,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Public API from the package root. It exports `parseChangelog`, `findRelease`, `verifyRelease`, and `renderNotes`.
 - Bundled type declarations in `types.d.ts`, including the `Changelog`, `Release`, `Verification`, `VerifyOptions`, and `NotesOptions` types.
 
-[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.0.0
