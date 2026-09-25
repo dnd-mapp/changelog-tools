@@ -47,13 +47,14 @@ The sources live in `src`, and most modules have a `.spec.ts` file next to them.
 | `src/parse.ts`        | Reads the sections and link references of a changelog                |
 | `src/verify.ts`       | Runs the release checks on a parsed changelog                        |
 | `src/notes.ts`        | Renders the section of a version as release notes                    |
+| `src/release.ts`      | Prepares the changelog and the manifest for the next release         |
 | `testing/fixtures.ts` | The changelogs that the specs run against                            |
 
 Import other files with the `.ts` extension. The bundler resolves it, and `tsc` accepts it because `allowImportingTsExtensions` is on.
 
 ## Changing the code
 
-Only `src/cli.ts` touches the file system and the console. The parser, the checks, and the renderer take strings and return values, so keep them free of I/O. That keeps them usable from the public API and easy to test.
+Only `src/cli.ts` touches the file system and the console. The parser, the checks, the renderer, and the release preparation take strings and return values, so keep them free of I/O. That keeps them usable from the public API and easy to test.
 
 The commands resolve paths from the directory that they run from. Keep it that way, because the installed bin must work on the project of the consumer.
 

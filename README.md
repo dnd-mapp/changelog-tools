@@ -6,7 +6,7 @@
 
 Verifies a [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) file before a release and extracts the release notes for a version.
 
-Run `changelog verify` before you publish, so a release never goes out with a missing, empty, or stale changelog section. Run `changelog notes` to get the body of the GitHub Release from the same section.
+Run `changelog release` to prepare the release commit from the unreleased changes. Run `changelog verify` before you publish, so a release never goes out with a missing, empty, or stale changelog section. Run `changelog notes` to get the body of the GitHub Release from the same section.
 
 ## Requirements
 
@@ -21,7 +21,44 @@ pnpm add --save-dev @dnd-mapp/changelog-tools
 
 ## Usage
 
-Both commands read `CHANGELOG.md` from the current working directory, unless you pass `--file`. They exit with code `0` on success and `1` on any failure.
+The commands read `CHANGELOG.md` from the current working directory, unless you pass `--file`. They exit with code `0` on success and `1` on any failure.
+
+### Preparing a release
+
+```bash
+changelog release --bump minor [--file CHANGELOG.md] [--manifest package.json]
+```
+
+The command makes the changes of a `chore: release X.Y.Z` commit. It bumps the latest release in the changelog to the next version, and moves the entries under `[Unreleased]` into a section for that version. The section is dated today in UTC.
+
+| `--bump` | From `1.1.0` to |
+|:---------|:----------------|
+| `major`  | `2.0.0`         |
+| `minor`  | `1.2.0`         |
+| `patch`  | `1.1.1`         |
+
+It edits both files in place.
+
+- A `## [1.2.0] - 2026-09-25` heading goes directly below `## [Unreleased]`, which stays with an empty body.
+- The `[Unreleased]` link compares from `v1.2.0` to `HEAD`, and a `[1.2.0]` link to the `v1.2.0` release goes below it.
+- The top-level `version` field of the manifest becomes `1.2.0`. Nothing else in the manifest changes, so its formatting stays as it is.
+
+Both files keep their line endings, whether LF or CRLF. The result passes `changelog verify` for the new version.
+
+The command writes nothing when a check fails. It prints the problem and exits with code `1`.
+
+| Check                                                               | Message on failure                                                                   |
+|:--------------------------------------------------------------------|:-------------------------------------------------------------------------------------|
+| A `## [Unreleased]` section exists                                  | `CHANGELOG.md has no [Unreleased] section`                                           |
+| No release sits above `[Unreleased]`                                | `The [Unreleased] section is not the first section of CHANGELOG.md`                  |
+| `[Unreleased]` has an entry, by the same rule as `changelog verify` | `The [Unreleased] section is empty`                                                  |
+| A release sits below `[Unreleased]`                                 | `CHANGELOG.md has no release to bump from`                                           |
+| The latest release has no prerelease or build part                  | `Cannot bump 1.1.0-beta.1, because it is not a MAJOR.MINOR.PATCH version`            |
+| The latest release equals the `version` field of the manifest       | `package.json version 1.0.0 does not match the latest release 1.1.0 in CHANGELOG.md` |
+| No section exists for the next version                              | `CHANGELOG.md already has a section for 1.2.0`                                       |
+| No link reference exists for the next version                       | `CHANGELOG.md already has a link reference for [1.2.0]`                              |
+| An `[Unreleased]` link reference exists                             | `Missing link reference for [Unreleased]`                                            |
+| The `[Unreleased]` link compares from the latest release to `HEAD`  | `[Unreleased] link does not compare from v1.1.0 to HEAD`                             |
 
 ### Verifying a release
 
@@ -100,14 +137,18 @@ if (verification.ok) {
 }
 ```
 
-| Export           | Description                                                               |
-|:-----------------|:--------------------------------------------------------------------------|
-| `parseChangelog` | Reads the sections and link references of a changelog                     |
-| `findRelease`    | Finds the first section of a version, or `Unreleased`                     |
-| `verifyRelease`  | Runs the checks of `changelog verify` and returns every problem found     |
-| `renderNotes`    | Renders the section of a version as release notes, like `changelog notes` |
+| Export               | Description                                                                     |
+|:---------------------|:--------------------------------------------------------------------------------|
+| `parseChangelog`     | Reads the sections and link references of a changelog                           |
+| `findRelease`        | Finds the first section of a version, or `Unreleased`                           |
+| `verifyRelease`      | Runs the checks of `changelog verify` and returns every problem found           |
+| `renderNotes`        | Renders the section of a version as release notes, like `changelog notes`       |
+| `prepareRelease`     | Prepares the changelog for the next release, like `changelog release`           |
+| `setManifestVersion` | Sets the top-level `version` field of a `package.json` and keeps its formatting |
 
-The `Changelog`, `Release`, `Verification`, `VerifyOptions`, and `NotesOptions` types are exported as well.
+The `Changelog`, `Release`, `Verification`, `VerifyOptions`, `NotesOptions`, `Bump`, `ReleaseOptions`, and `PreparedRelease` types are exported as well.
+
+`prepareRelease` throws an `Error` with the messages of `changelog release` when a check fails. `setManifestVersion` throws when the manifest is not valid JSON or has no top-level `version` string.
 
 ## Changelog
 
