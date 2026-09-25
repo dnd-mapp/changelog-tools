@@ -27,7 +27,8 @@ export interface PreparedRelease {
 /** A release version without a prerelease or build part, which is the only kind that can be bumped. */
 const CORE_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const UNRELEASED_LINK = /^\[(unreleased)\]: /i;
-const COMPARE_TO_HEAD = /^(.+)\/compare\/(\S+)\.\.\.HEAD$/;
+const COMPARE = '/compare/';
+const TO_HEAD = '...HEAD';
 /** A single whitespace character of JSON. It does not match the empty string past the end of the content. */
 const JSON_WHITESPACE = /^[ \t\r\n]$/;
 
@@ -42,6 +43,21 @@ function bumpVersion(version: string, bump: Bump): string {
         case 'patch':
             return `${major}.${minor}.${patch + 1}`;
     }
+}
+
+/**
+ * Splits a link that compares to HEAD at the last `/compare/` part that leaves a base. The parser gives links without
+ * whitespace. It scans the link a fixed number of times, because a regex that searches for the part can take quadratic
+ * time.
+ */
+function splitCompareLink(link: string): { repository: string; from: string } | undefined {
+    if (!link.endsWith(TO_HEAD)) {
+        return undefined;
+    }
+    const target = link.slice(0, -TO_HEAD.length);
+    const start = target.lastIndexOf(COMPARE, target.length - COMPARE.length - 1);
+
+    return start < 1 ? undefined : { repository: target.slice(0, start), from: target.slice(start + COMPARE.length) };
 }
 
 /**
@@ -96,11 +112,12 @@ export function prepareRelease(content: string, options: ReleaseOptions): Prepar
     if (unreleasedLink === undefined) {
         throw new Error('Missing link reference for [Unreleased]');
     }
-    const [, repository, from] = COMPARE_TO_HEAD.exec(unreleasedLink) ?? [];
+    const compare = splitCompareLink(unreleasedLink);
 
-    if (from !== `v${latest.version}`) {
+    if (compare?.from !== `v${latest.version}`) {
         throw new Error(`[Unreleased] link does not compare from v${latest.version} to HEAD`);
     }
+    const { repository } = compare;
     const eol = content.includes('\r\n') ? '\r\n' : '\n';
     const lines = content.split(/\r?\n/);
 

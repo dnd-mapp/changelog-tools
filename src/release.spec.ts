@@ -115,8 +115,19 @@ describe('prepareRelease', () => {
     it.each([
         ['a stale', staleUnreleasedLink],
         ['a malformed', unreleased.replace('compare/v1.1.0...HEAD', 'tree/main')],
+        ['an empty-based', unreleased.replace('compare/v1.1.0...HEAD', 'compare/...HEAD')],
+        ['a repository-less', unreleased.replace('https://github.com/dnd-mapp/example/compare/', '/compare/')],
+        ['a long malformed', unreleased.replace('compare/v1.1.0...HEAD', `compare/${'/compare/!'.repeat(50_000)}`)],
     ])('should fail for %s [Unreleased] link', (_, content) => {
         expect(() => prepare(content)).toThrow(new Error('[Unreleased] link does not compare from v1.1.0 to HEAD'));
+    });
+
+    it('should take the base of the [Unreleased] link from its last compare part', () => {
+        const content = unreleased.replace('compare/v1.1.0...HEAD', 'compare/v1.0.0/compare/v1.1.0...HEAD');
+
+        expect(prepare(content).changelog).toContain(
+            '[Unreleased]: https://github.com/dnd-mapp/example/compare/v1.0.0/compare/v1.2.0...HEAD\n',
+        );
     });
 
     it('should keep the case of the [Unreleased] label', () => {

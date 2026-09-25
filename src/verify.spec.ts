@@ -111,6 +111,28 @@ describe('verifyRelease', () => {
         expect(verify(content).errors).toEqual(['[Unreleased] link does not compare from v1.2.0 to HEAD']);
     });
 
+    it.each([
+        ['an empty base', 'compare/...HEAD'],
+        ['a long malformed target', `compare/${'/compare/!'.repeat(50_000)}`],
+    ])('should fail for an [Unreleased] link with %s', (_, target) => {
+        const content = valid.replace('compare/v1.2.0...HEAD', target);
+
+        expect(verify(content).errors).toEqual(['[Unreleased] link does not compare from v1.2.0 to HEAD']);
+    });
+
+    it('should take the base of the [Unreleased] link from its first compare part', () => {
+        const content = valid.replace('compare/v1.2.0...HEAD', 'compare/v1.1.0/compare/v1.2.0...HEAD');
+
+        expect(verify(content).errors).toEqual(['[Unreleased] link still compares from v1.1.0/compare/v1.2.0']);
+    });
+
+    it('should take the base of the [Unreleased] link from after its last whitespace', () => {
+        const changelog = parseChangelog(valid);
+        const links = { ...changelog.links, Unreleased: 'https://x/compare/v1.1.0 /compare/v1.2.0...HEAD' };
+
+        expect(verifyRelease({ ...changelog, links }, { version: '1.2.0', now })).toMatchObject({ ok: true });
+    });
+
     it('should fail when the release is yanked', () => {
         expect(verify(yanked).errors).toEqual(['1.2.0 is marked as yanked']);
     });
