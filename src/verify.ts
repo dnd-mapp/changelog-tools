@@ -30,7 +30,8 @@ const SEMVER =
 
 const CHANGE_GROUP = /^### (?:Added|Changed|Deprecated|Removed|Fixed|Security)\s*$/;
 const LIST_ITEM = /^[-*+] +\S/;
-const COMPARE_TO_HEAD = /\/compare\/(\S+)\.\.\.HEAD$/;
+const COMPARE = '/compare/';
+const TO_HEAD = '...HEAD';
 
 /** Time zones run up to 14 hours ahead of UTC, so a date is only in the future once it is in the future everywhere. */
 const LATEST_TIME_ZONE_OFFSET = 14 * 60 * 60 * 1000;
@@ -57,6 +58,21 @@ export function hasEntries(body: string): boolean {
         }
     }
     return false;
+}
+
+/**
+ * The base of a link that compares to HEAD, taken from the first `/compare/` part that leaves a base without whitespace.
+ * It scans the link a fixed number of times, because a regex that searches for the part can take quadratic time.
+ */
+function compareBase(link: string): string | undefined {
+    if (!link.endsWith(TO_HEAD)) {
+        return undefined;
+    }
+    const target = link.slice(0, -TO_HEAD.length).split(/\s/).at(-1)!;
+    const start = target.indexOf(COMPARE);
+    const base = target.slice(start + COMPARE.length);
+
+    return start === -1 || base === '' ? undefined : base;
 }
 
 function checkDate(release: Release, now: Date): string | undefined {
@@ -90,7 +106,7 @@ function checkLinks(changelog: Changelog, version: string): string[] {
         errors.push('Missing link reference for [Unreleased]');
         return errors;
     }
-    const from = COMPARE_TO_HEAD.exec(unreleasedLink)?.[1];
+    const from = compareBase(unreleasedLink);
 
     if (from === undefined) {
         errors.push(`[Unreleased] link does not compare from v${version} to HEAD`);

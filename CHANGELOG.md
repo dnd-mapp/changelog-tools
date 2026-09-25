@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- `changelog verify`, `changelog release`, `verifyRelease`, and `prepareRelease` read the `[Unreleased]` link in linear time. Before, a long crafted link could take quadratic time to check.
+
 ## [1.1.0] - 2026-09-25
 
 ### Added
