@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-26
+
 ### Fixed
 
 - `changelog verify`, `changelog release`, `verifyRelease`, and `prepareRelease` read the `[Unreleased]` link in linear time. Before, a long crafted link could take quadratic time to check.
@@ -27,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Public API from the package root. It exports `parseChangelog`, `findRelease`, `verifyRelease`, and `renderNotes`.
 - Bundled type declarations in `types.d.ts`, including the `Changelog`, `Release`, `Verification`, `VerifyOptions`, and `NotesOptions` types.
 
-[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.1.1
 [1.1.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.0.0
