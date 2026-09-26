@@ -36,7 +36,7 @@ jobs:
                   require-lockfile: true
 
             - name: Open the release pull request
-              uses: dnd-mapp/action-prepare-release@97f93a3acc29298fbd45d5f5eae26b5d3bd191a3 # v1.0.0
+              uses: dnd-mapp/action-prepare-release@b316f1698ace141b667c3a6f6949937da48fbe17 # v1.1.0
               with:
                   bump: ${{ inputs.bump }}
                   client-id: ${{ vars.GH_APP_CLIENT_ID }}
