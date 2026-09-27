@@ -185,7 +185,7 @@ catalogs:
       specifier: ~1.0.0
       version: 1.0.0
     '@types/node':
-      specifier: ~24.13.5
+      specifier: ~24.13.6
       version: 24.13.6
     tsdown:
       specifier: ~0.23.0
