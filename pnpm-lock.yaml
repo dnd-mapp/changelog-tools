@@ -166,7 +166,7 @@ settings:
 catalogs:
   commitlint:
     '@commitlint/cli':
-      specifier: ~21.2.2
+      specifier: ~21.2.3
       version: 21.2.3
     '@dnd-mapp/config-commitlint':
       specifier: ~1.1.0
@@ -205,15 +205,15 @@ catalogs:
       specifier: ~1.0.0
       version: 1.0.0
     markdownlint-cli2:
-      specifier: ~0.23.2
+      specifier: ~0.23.3
       version: 0.23.3
   prettier:
     '@dnd-mapp/config-prettier':
       specifier: ~1.1.0
       version: 1.1.0
     prettier:
-      specifier: ~3.9.7
-      version: 3.9.8
+      specifier: ~3.9.9
+      version: 3.9.9
     prettier-plugin-organize-imports:
       specifier: ~4.3.0
       version: 4.3.0
@@ -225,8 +225,8 @@ catalogs:
       specifier: ~5.0.1
       version: 5.0.1
     vite:
-      specifier: ~8.3.0
-      version: 8.3.0
+      specifier: ~8.3.1
+      version: 8.3.1
     vitest:
       specifier: ~5.0.1
       version: 5.0.1
@@ -252,7 +252,7 @@ importers:
         version: 1.0.0(markdownlint-cli2@0.23.3)
       '@dnd-mapp/config-prettier':
         specifier: catalog:prettier
-        version: 1.1.0(prettier-plugin-organize-imports@4.3.0)(prettier@3.9.8)(typescript@6.0.3)
+        version: 1.1.0(prettier-plugin-organize-imports@4.3.0)(prettier@3.9.9)(typescript@6.0.3)
       '@dnd-mapp/config-typescript':
         specifier: 'catalog:'
         version: 1.1.0(typescript@6.0.3)
@@ -279,10 +279,10 @@ importers:
         version: 0.23.3
       prettier:
         specifier: catalog:prettier
-        version: 3.9.8
+        version: 3.9.9
       prettier-plugin-organize-imports:
         specifier: catalog:prettier
-        version: 4.3.0(prettier@3.9.8)(typescript@6.0.3)
+        version: 4.3.0(prettier@3.9.9)(typescript@6.0.3)
       tsdown:
         specifier: 'catalog:'
         version: 0.23.0(typescript@6.0.3)
@@ -291,10 +291,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: catalog:vitest
-        version: 8.3.0(@types/node@24.13.6)(jiti@2.6.1)
+        version: 8.3.1(@types/node@24.13.6)(jiti@2.6.1)
       vitest:
         specifier: catalog:vitest
-        version: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.0)
+        version: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.1)
     publishDirectory: dist
 
 packages:
@@ -1737,8 +1737,8 @@ packages:
       vue-tsc:
         optional: true
 
-  prettier@3.9.8:
-    resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
+  prettier@3.9.9:
+    resolution: {integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -1971,8 +1971,8 @@ packages:
     resolution: {integrity: sha512-mMVzj0TXExtVdlDEq+Mzp0eyOuyznNpFobNM3uAqe3HVm/Ps2c+u17BligMkZjZCA6EiXpoon8iRTer3iu40SQ==}
     engines: {node: '>=18.12.0'}
 
-  vite@8.3.0:
-    resolution: {integrity: sha512-lhZBVvEHefgE+HQZC9O7EBJgCU/nVzFNl7vkS4RE0APtWLP02/8QVIkQtzBxPquh7lq5/78NHipTj7ODQ6XuyQ==}
+  vite@8.3.1:
+    resolution: {integrity: sha512-/bvH9E9tmCXRGp2uXY3WbOldqpTwFkbha/8ANaEQ6VkxhH60KyqLwgZq6lG2y+4uT55x9+9eUHMpQ7uGnOCKjA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -2274,11 +2274,11 @@ snapshots:
     optionalDependencies:
       markdownlint-cli2: 0.23.3
 
-  '@dnd-mapp/config-prettier@1.1.0(prettier-plugin-organize-imports@4.3.0)(prettier@3.9.8)(typescript@6.0.3)':
+  '@dnd-mapp/config-prettier@1.1.0(prettier-plugin-organize-imports@4.3.0)(prettier@3.9.9)(typescript@6.0.3)':
     dependencies:
-      prettier: 3.9.8
+      prettier: 3.9.9
     optionalDependencies:
-      prettier-plugin-organize-imports: 4.3.0(prettier@3.9.8)(typescript@6.0.3)
+      prettier-plugin-organize-imports: 4.3.0(prettier@3.9.9)(typescript@6.0.3)
       typescript: 6.0.3
 
   '@dnd-mapp/config-typescript@1.1.0(typescript@6.0.3)':
@@ -2557,7 +2557,7 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.0)
+      vitest: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.1)
 
   '@vitest/istanbul-lib-coverage@1.0.1': {}
 
@@ -2565,14 +2565,14 @@ snapshots:
     dependencies:
       '@vitest/istanbul-lib-coverage': 1.0.1
 
-  '@vitest/mocker@5.0.1(vite@8.3.0)':
+  '@vitest/mocker@5.0.1(vite@8.3.1)':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.1
       estree-walker: 3.0.3
       magic-string: 1.4.1
     optionalDependencies:
-      vite: 8.3.0(@types/node@24.13.6)(jiti@2.6.1)
+      vite: 8.3.1(@types/node@24.13.6)(jiti@2.6.1)
 
   '@vitest/pretty-format@5.0.1':
     dependencies:
@@ -2588,7 +2588,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.0)
+      vitest: 5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.1)
 
   '@vitest/utils@5.0.1':
     dependencies:
@@ -3480,12 +3480,12 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-organize-imports@4.3.0(prettier@3.9.8)(typescript@6.0.3):
+  prettier-plugin-organize-imports@4.3.0(prettier@3.9.9)(typescript@6.0.3):
     dependencies:
-      prettier: 3.9.8
+      prettier: 3.9.9
       typescript: 6.0.3
 
-  prettier@3.9.8: {}
+  prettier@3.9.9: {}
 
   punycode.js@2.3.1: {}
 
@@ -3678,7 +3678,7 @@ snapshots:
 
   verkit@0.4.1: {}
 
-  vite@8.3.0(@types/node@24.13.6)(jiti@2.6.1):
+  vite@8.3.1(@types/node@24.13.6)(jiti@2.6.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -3690,10 +3690,10 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
 
-  vitest@5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.0):
+  vitest@5.0.1(@types/node@24.13.6)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(vite@8.3.1):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.1(vite@8.3.0)
+      '@vitest/mocker': 5.0.1(vite@8.3.1)
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -3704,7 +3704,7 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.3.0(@types/node@24.13.6)(jiti@2.6.1)
+      vite: 8.3.1(@types/node@24.13.6)(jiti@2.6.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.6
