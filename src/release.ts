@@ -8,7 +8,11 @@ export type Bump = 'major' | 'minor' | 'patch';
 export interface ReleaseOptions {
     /** The part of the latest version to increase. */
     bump: Bump;
-    /** The `version` field of `package.json`, which must match the latest release. When it is left out, the manifest is not checked. */
+    /**
+     * The `version` field of `package.json`, which must match the latest release. The first release bumps it instead,
+     * because the changelog has no release yet. When it is left out, the manifest is not checked, and the changelog
+     * needs a release to bump.
+     */
     manifestVersion?: string | undefined;
     /** The name of the changelog in the messages. Defaults to `CHANGELOG.md`. */
     file?: string | undefined;
@@ -28,6 +32,7 @@ export interface PreparedRelease {
 const CORE_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const UNRELEASED_LINK = /^\[(unreleased)\]: /i;
 const COMPARE = '/compare/';
+const COMMITS = '/commits/';
 const TO_HEAD = '...HEAD';
 /** A single whitespace character of JSON. It does not match the empty string past the end of the content. */
 const JSON_WHITESPACE = /^[ \t\r\n]$/;
@@ -60,12 +65,38 @@ function splitCompareLink(link: string): { repository: string; from: string } | 
     return start < 1 ? undefined : { repository: target.slice(0, start), from: target.slice(start + COMPARE.length) };
 }
 
+/** Gives the repository of the `[Unreleased]` link, which compares from the latest release to HEAD. */
+function compareRepository(link: string, latest: string): string {
+    const compare = splitCompareLink(link);
+
+    if (compare?.from !== `v${latest}`) {
+        throw new Error(`[Unreleased] link does not compare from v${latest} to HEAD`);
+    }
+    return compare.repository;
+}
+
+/**
+ * Gives the repository of the `[Unreleased]` link before the first release. The link points to the commits of a branch,
+ * such as `https://github.com/owner/repo/commits/main`.
+ */
+function firstRepository(link: string): string {
+    const start = link.lastIndexOf(COMMITS, link.length - COMMITS.length - 1);
+
+    if (start < 1) {
+        throw new Error('[Unreleased] link does not point to the commits of a branch');
+    }
+    return link.slice(0, start);
+}
+
 /**
  * Prepares the changelog for the next release.
  *
  * The next version bumps the latest release, which is the section below `[Unreleased]`. A heading for it goes directly
  * below the `[Unreleased]` heading, so the unreleased entries become its section. The `[Unreleased]` link then compares
  * from the new version, and a link to the new release goes below it. The line endings of the changelog are kept.
+ *
+ * Before the first release, the changelog has no release to bump, so the next version bumps the manifest version, such
+ * as `0.0.0`. The `[Unreleased]` link points to the commits of a branch until then.
  *
  * @param content The content of the changelog.
  * @param options The part of the version to bump and what else to check.
@@ -86,20 +117,21 @@ export function prepareRelease(content: string, options: ReleaseOptions): Prepar
     if (!hasEntries(unreleased.body)) {
         throw new Error('The [Unreleased] section is empty');
     }
-    const latest = changelog.releases[1];
+    const previous = changelog.releases[1];
+    const latest = previous?.version ?? manifestVersion;
 
     if (latest === undefined) {
         throw new Error(`${file} has no release to bump from`);
     }
-    if (!CORE_VERSION.test(latest.version)) {
-        throw new Error(`Cannot bump ${latest.version}, because it is not a MAJOR.MINOR.PATCH version`);
+    if (!CORE_VERSION.test(latest)) {
+        throw new Error(`Cannot bump ${latest}, because it is not a MAJOR.MINOR.PATCH version`);
     }
-    if (manifestVersion !== undefined && manifestVersion !== latest.version) {
+    if (manifestVersion !== undefined && manifestVersion !== latest) {
         throw new Error(
-            `package.json version ${manifestVersion} does not match the latest release ${latest.version} in ${file}`,
+            `package.json version ${manifestVersion} does not match the latest release ${latest} in ${file}`,
         );
     }
-    const version = bumpVersion(latest.version, bump);
+    const version = bumpVersion(latest, bump);
 
     if (findRelease(changelog, version) !== undefined) {
         throw new Error(`${file} already has a section for ${version}`);
@@ -112,12 +144,8 @@ export function prepareRelease(content: string, options: ReleaseOptions): Prepar
     if (unreleasedLink === undefined) {
         throw new Error('Missing link reference for [Unreleased]');
     }
-    const compare = splitCompareLink(unreleasedLink);
-
-    if (compare?.from !== `v${latest.version}`) {
-        throw new Error(`[Unreleased] link does not compare from v${latest.version} to HEAD`);
-    }
-    const { repository } = compare;
+    const repository =
+        previous === undefined ? firstRepository(unreleasedLink) : compareRepository(unreleasedLink, latest);
     const eol = content.includes('\r\n') ? '\r\n' : '\n';
     const lines = content.split(/\r?\n/);
 

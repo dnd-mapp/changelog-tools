@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { consoleMock } from '../testing/console.ts';
 import {
+    firstManifest,
+    firstRelease,
+    firstReleased,
     manifest,
     missingSection,
     notes,
@@ -178,6 +181,24 @@ describe('run', () => {
             ]);
             expect(consoleMock.entries).toEqual([
                 { severity: 'log', message: 'Prepared the 1.2.0 release in CHANGELOG.md and package.json' },
+            ]);
+        });
+
+        it('should bump the manifest version for the first release', async () => {
+            fsMock.files({ 'CHANGELOG.md': firstRelease, 'package.json': firstManifest });
+
+            await expect(run(['release', '--bump', 'major'])).resolves.toBe(0);
+
+            expect(fsMock.entriesOf('writeFile')).toEqual([
+                { operation: 'writeFile', path: 'CHANGELOG.md', data: firstReleased },
+                {
+                    operation: 'writeFile',
+                    path: 'package.json',
+                    data: firstManifest.replace('"version": "0.0.0"', '"version": "1.0.0"'),
+                },
+            ]);
+            expect(consoleMock.entries).toEqual([
+                { severity: 'log', message: 'Prepared the 1.0.0 release in CHANGELOG.md and package.json' },
             ]);
         });
 

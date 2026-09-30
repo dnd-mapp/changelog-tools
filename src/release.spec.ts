@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     crlf,
     firstRelease,
+    firstReleased,
     missingUnreleasedLink,
     noUnreleasedSection,
     prereleaseLatest,
@@ -78,8 +79,49 @@ describe('prepareRelease', () => {
         );
     });
 
-    it('should fail when there is no earlier release to bump', () => {
-        expect(() => prepare(firstRelease)).toThrow(new Error('CHANGELOG.md has no release to bump from'));
+    it('should bump the manifest version for the first release', () => {
+        expect(prepare(firstRelease, { bump: 'major', manifestVersion: '0.0.0' })).toEqual({
+            version: '1.0.0',
+            changelog: firstReleased,
+        });
+    });
+
+    it.each([
+        ['minor', '0.1.0'],
+        ['patch', '0.0.1'],
+    ] as const)('should bump the %s version of the manifest to %s for the first release', (bump, version) => {
+        expect(prepare(firstRelease, { bump, manifestVersion: '0.0.0' }).version).toBe(version);
+    });
+
+    it('should give a first release that passes the release checks', () => {
+        const { version, changelog } = prepare(firstRelease, { bump: 'major', manifestVersion: '0.0.0' });
+
+        expect(verifyRelease(parseChangelog(changelog), { version, manifestVersion: version, now })).toMatchObject({
+            ok: true,
+            errors: [],
+        });
+    });
+
+    it('should fail when there is no earlier release and no manifest version to bump', () => {
+        expect(() => prepare(firstRelease, { manifestVersion: undefined })).toThrow(
+            new Error('CHANGELOG.md has no release to bump from'),
+        );
+    });
+
+    it('should fail when the manifest version of the first release is a prerelease', () => {
+        expect(() => prepare(firstRelease, { manifestVersion: '0.0.0-dev' })).toThrow(
+            new Error('Cannot bump 0.0.0-dev, because it is not a MAJOR.MINOR.PATCH version'),
+        );
+    });
+
+    it.each([
+        ['a compare', firstRelease.replace('commits/main', 'compare/v0.0.0...HEAD')],
+        ['a branch-less', firstRelease.replace('commits/main', 'commits/')],
+        ['a repository-less', firstRelease.replace('https://github.com/dnd-mapp/example/commits/', '/commits/')],
+    ])('should fail for %s [Unreleased] link before the first release', (_, content) => {
+        expect(() => prepare(content, { manifestVersion: '0.0.0' })).toThrow(
+            new Error('[Unreleased] link does not point to the commits of a branch'),
+        );
     });
 
     it('should fail when the latest release is a prerelease', () => {
