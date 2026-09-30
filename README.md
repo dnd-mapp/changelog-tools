@@ -45,20 +45,23 @@ It edits both files in place.
 
 Both files keep their line endings, whether LF or CRLF. The result passes `changelog verify` for the new version.
 
+The first release bumps the `version` field of the manifest instead, because the changelog has no release yet. From `0.0.0`, `major` gives `1.0.0`, `minor` gives `0.1.0`, and `patch` gives `0.0.1`. Until then, the `[Unreleased]` link points to the commits of a branch, such as `https://github.com/owner/repo/commits/main`. The command replaces it with the compare link and the link to the release, like for any other release.
+
 The command writes nothing when a check fails. It prints the problem and exits with code `1`.
 
-| Check                                                               | Message on failure                                                                   |
-|:--------------------------------------------------------------------|:-------------------------------------------------------------------------------------|
-| A `## [Unreleased]` section exists                                  | `CHANGELOG.md has no [Unreleased] section`                                           |
-| No release sits above `[Unreleased]`                                | `The [Unreleased] section is not the first section of CHANGELOG.md`                  |
-| `[Unreleased]` has an entry, by the same rule as `changelog verify` | `The [Unreleased] section is empty`                                                  |
-| A release sits below `[Unreleased]`                                 | `CHANGELOG.md has no release to bump from`                                           |
-| The latest release has no prerelease or build part                  | `Cannot bump 1.1.0-beta.1, because it is not a MAJOR.MINOR.PATCH version`            |
-| The latest release equals the `version` field of the manifest       | `package.json version 1.0.0 does not match the latest release 1.1.0 in CHANGELOG.md` |
-| No section exists for the next version                              | `CHANGELOG.md already has a section for 1.2.0`                                       |
-| No link reference exists for the next version                       | `CHANGELOG.md already has a link reference for [1.2.0]`                              |
-| An `[Unreleased]` link reference exists                             | `Missing link reference for [Unreleased]`                                            |
-| The `[Unreleased]` link compares from the latest release to `HEAD`  | `[Unreleased] link does not compare from v1.1.0 to HEAD`                             |
+| Check                                                                               | Message on failure                                                                   |
+|:------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|
+| A `## [Unreleased]` section exists                                                  | `CHANGELOG.md has no [Unreleased] section`                                           |
+| No release sits above `[Unreleased]`                                                | `The [Unreleased] section is not the first section of CHANGELOG.md`                  |
+| `[Unreleased]` has an entry, by the same rule as `changelog verify`                 | `The [Unreleased] section is empty`                                                  |
+| A release sits below `[Unreleased]`, or a manifest version is given                 | `CHANGELOG.md has no release to bump from`                                           |
+| The version to bump has no prerelease or build part                                 | `Cannot bump 1.1.0-beta.1, because it is not a MAJOR.MINOR.PATCH version`            |
+| The latest release equals the `version` field of the manifest                       | `package.json version 1.0.0 does not match the latest release 1.1.0 in CHANGELOG.md` |
+| No section exists for the next version                                              | `CHANGELOG.md already has a section for 1.2.0`                                       |
+| No link reference exists for the next version                                       | `CHANGELOG.md already has a link reference for [1.2.0]`                              |
+| An `[Unreleased]` link reference exists                                             | `Missing link reference for [Unreleased]`                                            |
+| The `[Unreleased]` link compares from the latest release to `HEAD`                  | `[Unreleased] link does not compare from v1.1.0 to HEAD`                             |
+| Before the first release, the `[Unreleased]` link points to the commits of a branch | `[Unreleased] link does not point to the commits of a branch`                        |
 
 ### Verifying a release
 

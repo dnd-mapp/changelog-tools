@@ -114,12 +114,26 @@ export const releaseAboveUnreleased = unreleased.replace(
     '## [1.1.1] - 2026-09-10\n\n### Fixed\n\n- A typo.\n\n## [Unreleased]',
 );
 
-/** The entries of the first release are under `[Unreleased]`, so there is no earlier version to bump. */
+/**
+ * The entries of the first release are under `[Unreleased]`, so there is no earlier version to bump. Preparing a major
+ * release from the {@link firstManifest} on 2026-09-22 gives {@link firstReleased}.
+ */
 export const firstRelease = `${intro}
 ## [Unreleased]
 
 ${entries}
 [Unreleased]: ${repository}/commits/main
+`;
+
+/** A changelog that is ready for the first release, 1.0.0. */
+export const firstReleased = `${intro}
+## [Unreleased]
+
+## [1.0.0] - 2026-09-22
+
+${entries}
+[Unreleased]: ${repository}/compare/v1.0.0...HEAD
+[1.0.0]: ${repository}/releases/tag/v1.0.0
 `;
 
 /** The latest release is the 1.1.0-beta.1 prerelease. */
@@ -162,3 +176,6 @@ export const unreleasedManifest = `{
   "files": ["dist"]
 }
 `;
+
+/** The manifest before the first release, which has the placeholder version 0.0.0. */
+export const firstManifest = unreleasedManifest.replace('"version": "1.1.0"', '"version": "0.0.0"');

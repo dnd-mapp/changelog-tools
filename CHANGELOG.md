@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `changelog release` and `prepareRelease` prepare the first release of a project. When the changelog has no release yet, they bump the `version` field of `package.json`, such as `0.0.0`, and replace the `[Unreleased]` link to the commits of a branch with the compare link. `prepareRelease` needs the `manifestVersion` option for it.
+
 ## [1.1.1] - 2026-09-26
 
 ### Fixed
