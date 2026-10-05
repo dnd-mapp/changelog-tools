@@ -92,7 +92,7 @@ function dataOf(data: Parameters<typeof FsPromises.writeFile>[1]): string {
     throw new TypeError('The fs mock only supports string data');
 }
 
-export const readFile = ((path, options) =>
+export const readFile = ((path: PathLike | FsPromises.FileHandle, options?: unknown) =>
     perform({ operation: 'readFile', path: pathOf(path), options })) as typeof FsPromises.readFile;
 
 export const writeFile = ((path, data) =>
