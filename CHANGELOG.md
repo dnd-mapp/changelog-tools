@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-08
+
 ### Added
 
 - `changelog release` and `prepareRelease` prepare the first release of a project. When the changelog has no release yet, they bump the `version` field of `package.json`, such as `0.0.0`, and replace the `[Unreleased]` link to the commits of a branch with the compare link. `prepareRelease` needs the `manifestVersion` option for it.
@@ -33,7 +35,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Public API from the package root. It exports `parseChangelog`, `findRelease`, `verifyRelease`, and `renderNotes`.
 - Bundled type declarations in `types.d.ts`, including the `Changelog`, `Release`, `Verification`, `VerifyOptions`, and `NotesOptions` types.
 
-[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/dnd-mapp/changelog-tools/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.2.0
 [1.1.1]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.1.1
 [1.1.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dnd-mapp/changelog-tools/releases/tag/v1.0.0
