@@ -2,7 +2,7 @@
 
 ## Project
 
-This package ships the `changelog` bin with the `release`, `verify`, and `notes` commands, plus a public API from `src/index.ts`. The `release` command prepares the release commit. Release workflows run the other two before they publish to npm and create a GitHub Release. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the layout, the scripts, and the commit and branch conventions.
+This package ships the `changelog` bin with the `release`, `verify`, and `notes` commands, plus a public API from `src/index.ts`. The `release` command prepares the release commit. Release workflows run the other two before they publish to npm and create a GitHub Release. Read the [shared contributing guide](https://github.com/dnd-mapp/.github/blob/main/CONTRIBUTING.md) for the conventions that every D&D Mapp repository follows, and [docs/contributing/README.md](docs/contributing/README.md) for the layout, the checks, and the release steps of this repository.
 
 - Keep all file system and console access in `src/cli.ts`. The parser, the checks, the renderer, and the release preparation take strings and return values.
 - Treat the failure messages as a contract. When you change one, update the README table and the specs in the same commit.
